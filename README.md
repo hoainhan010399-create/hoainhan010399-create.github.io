@@ -1,1 +1,637 @@
-# hoainhan010399-create.github.io
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Thiết Bị PATEK</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .role-selector {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .role-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .role-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .role-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .role-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .controls {
+            padding: 20px 30px;
+            background: white;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-box input, select {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .stats {
+            padding: 20px 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .table-container {
+            padding: 20px 30px 30px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        tbody tr {
+            transition: all 0.2s;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .brand-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .brand-ca { background: #e3f2fd; color: #1976d2; }
+        .brand-kyoritsu { background: #fff3e0; color: #f57c00; }
+        .brand-baoding { background: #f3e5f5; color: #7b1fa2; }
+        .brand-xianheng { background: #e8f5e9; color: #388e3c; }
+        .brand-hvhipot { background: #fce4ec; color: #c2185b; }
+        .brand-wuhan { background: #fff9c4; color: #f57f17; }
+        .brand-scope { background: #e1f5fe; color: #0277bd; }
+        .brand-handy { background: #ffe0b2; color: #e65100; }
+        .brand-dte { background: #f1f8e9; color: #558b2f; }
+        .brand-ponovo { background: #fce4ec; color: #ad1457; }
+        
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .icon-btn {
+            padding: 6px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+        }
+        
+        .icon-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .edit-btn {
+            color: #2196F3;
+        }
+        
+        .edit-btn:hover {
+            background: #e3f2fd;
+        }
+        
+        .delete-btn {
+            color: #f44336;
+        }
+        
+        .delete-btn:hover {
+            background: #ffebee;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 20px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .required {
+            color: #f44336;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            gap: 15px;
+            padding-top: 20px;
+        }
+        
+        .modal-footer button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-save {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: #5568d3;
+        }
+        
+        .btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .btn-cancel:hover {
+            background: #dee2e6;
+        }
+        
+        .price-preview {
+            font-size: 12px;
+            color: #28a745;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            font-size: 16px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔧 HỆ THỐNG QUẢN LÝ THIẾT BỊ KIỂM ĐỊNH</h1>
+            <p>PATEK - Thông tư 02/2025 (Tài liệu nội bộ)</p>
+        </div>
+
+        <!-- Role Selector -->
+        <div class="role-selector">
+            <div class="role-buttons">
+                <button class="role-btn active" onclick="setRole('view')">👁️ Xem</button>
+                <button class="role-btn" onclick="setRole('purchasing')">💰 Thu mua</button>
+                <button class="role-btn" onclick="setRole('technical')">⚙️ Kỹ thuật</button>
+            </div>
+            <div class="action-buttons" id="actionButtons" style="display: none;">
+                <button class="btn btn-primary" onclick="openModal()">
+                    <span>➕</span> Thêm thiết bị
+                </button>
+                <button class="btn btn-secondary" onclick="exportToExcel()">
+                    <span>📥</span> Xuất Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm theo tên thiết bị, model, hãng..." oninput="filterData()">
+            </div>
+            <select id="processFilter" onchange="filterData()">
+                <option value="">Tất cả quy trình</option>
+            </select>
+            <select id="brandFilter" onchange="filterData()">
+                <option value="">Tất cả hãng</option>
+            </select>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="totalEquipment">0</div>
+                <div class="label">Tổng thiết bị</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="totalProcesses">0</div>
+                <div class="label">Quy trình</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="totalBrands">0</div>
+                <div class="label">Hãng</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="withPrice">0</div>
+                <div class="label">Đã có giá</div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table id="mainTable">
+                <thead>
+                    <tr id="tableHeader">
+                        <th>STT</th>
+                        <th>Quy trình</th>
+                        <th>Tên thiết bị</th>
+                        <th>Áp dụng</th>
+                        <th>Hãng</th>
+                        <th>Model</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            <div id="noResults" class="no-results hidden">
+                Không tìm thấy kết quả phù hợp
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">➕ Thêm thiết bị mới</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="equipmentForm" onsubmit="saveEquipment(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>STT <span class="required">*</span></label>
+                            <input type="number" id="stt" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hãng <span class="required">*</span></label>
+                            <input type="text" id="brand" required placeholder="VD: CA, Baoding...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quy trình kiểm định <span class="required">*</span></label>
+                        <select id="process" required>
+                            <option value="">-- Chọn quy trình --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tên thiết bị <span class="required">*</span></label>
+                        <input type="text" id="equipment" required placeholder="VD: Thiết bị đo điện trở cách điện">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Áp dụng tại mục</label>
+                        <input type="text" id="apply" placeholder="VD: 7.2 (Đo điện trở cách điện) - 5kV">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Model</label>
+                        <input type="text" id="model" placeholder="VD: CA 6505">
+                    </div>
+
+                    <div id="purchasingFields" class="hidden">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>💰 Giá (VNĐ)</label>
+                                <input type="number" id="price" placeholder="VD: 50000000" oninput="updatePricePreview()">
+                                <div id="pricePreview" class="price-preview"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>🏢 Nhà cung cấp</label>
+                                <input type="text" id="supplier" placeholder="VD: Công ty ABC">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📝 Ghi chú</label>
+                        <textarea id="note" rows="3" placeholder="Thêm ghi chú (nếu có)..."></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-save">💾 Lưu</button>
+                        <button type="button" class="btn-cancel" onclick="closeModal()">✕ Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial data
+        const initialData = [
+            {id: 1, stt: 1, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 5kV", brand: "CA", model: "CA 6505", price: "", supplier: "", note: ""},
+            {id: 2, stt: 1, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 10kV", brand: "KYORITSU", model: "KYORITSU KEW 3125B", price: "", supplier: "", note: ""},
+            {id: 3, stt: 1, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 5kV", brand: "Baoding", model: "ZWS3005", price: "", supplier: "", note: ""},
+            {id: 4, stt: 1, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 10kV", brand: "Baoding", model: "ZWS3045", price: "", supplier: "", note: ""},
+            {id: 5, stt: 2, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 10kV", brand: "CA", model: "CA 6550", price: "", supplier: "", note: ""},
+            {id: 6, stt: 2, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 10kV", brand: "Xianheng", model: "", price: "", supplier: "", note: ""},
+            {id: 7, stt: 3, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị tạo điện áp và đo dòng điện", apply: "7.3 (Đo dòng điện rò/điện áp tham chiếu)", brand: "DTE", model: "DTE 70/50T", price: "", supplier: "", note: ""},
+            {id: 8, stt: 3, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị tạo điện áp và đo dòng điện", apply: "7.3 (Đo dòng điện rò/điện áp tham chiếu)", brand: "HV Hipot", model: "", price: "", supplier: "", note: ""},
+            {id: 9, stt: 3, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị tạo điện áp và đo dòng điện", apply: "7.3 (Đo dòng điện rò/điện áp tham chiếu)", brand: "Wuhan UHV", model: "", price: "", supplier: "", note: ""},
+            {id: 10, stt: 3, process: "Chống sét van/ Surge Arrester", equipment: "Thiết bị tạo điện áp và đo dòng điện", apply: "7.3 (Đo dòng điện rò/điện áp tham chiếu)", brand: "Xianheng", model: "YTB 20(3/50)", price: "", supplier: "", note: ""},
+            {id: 11, stt: 1, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 5kV", brand: "CA", model: "CA 6505", price: "", supplier: "", note: ""},
+            {id: 12, stt: 1, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 5kV", brand: "KYORITSU", model: "KYORITSU KEW 3125B", price: "", supplier: "", note: ""},
+            {id: 13, stt: 1, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 5kV", brand: "Baoding", model: "ZWS3005", price: "", supplier: "", note: ""},
+            {id: 14, stt: 2, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo tổn hao điện môi/ Tan Delta Tester", apply: "7.3 (Đo điện dung, tổn hao tag delta)", brand: "Xianheng", model: "DLT-800", price: "", supplier: "", note: ""},
+            {id: 15, stt: 2, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo tổn hao điện môi/ Tan Delta Tester", apply: "7.3 (Đo điện dung, tổn hao tag delta)", brand: "HV Hipot", model: "", price: "", supplier: "", note: ""},
+            {id: 16, stt: 3, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo điện trở một chiều cuộn dây", apply: "7.4 (Đo điện trở một chiều cuộn dây)", brand: "Scope", model: "TRM 104", price: "", supplier: "", note: ""},
+            {id: 17, stt: 3, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo điện trở một chiều cuộn dây", apply: "7.4 (Đo điện trở một chiều cuộn dây)", brand: "Handy", model: "GZD2040S", price: "", supplier: "", note: ""},
+            {id: 18, stt: 4, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo tỷ số biến đổi", apply: "7.5 và 7.6", brand: "Scope", model: "TTRM 302", price: "", supplier: "", note: ""},
+            {id: 19, stt: 4, process: "Máy biến áp/ Transformer", equipment: "Thiết bị đo tỷ số biến đổi", apply: "7.5 và 7.6", brand: "Handy", model: "TRT2206", price: "", supplier: "", note: ""},
+            {id: 20, stt: 5, process: "Máy biến áp/ Transformer", equipment: "Thiết bị kiểm tra biến dòng sứ xuyên", apply: "7.7", brand: "Ponovo", model: "PCT 200AX", price: "", supplier: "", note: ""},
+            {id: 21, stt: 1, process: "Cáp điện/ Electric Cable", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 5kV", brand: "CA", model: "CA 6505", price: "", supplier: "", note: ""},
+            {id: 22, stt: 1, process: "Cáp điện/ Electric Cable", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 5kV", brand: "KYORITSU", model: "KYORITSU KEW 3125B", price: "", supplier: "", note: ""},
+            {id: 23, stt: 2, process: "Cáp điện/ Electric Cable", equipment: "Thiết bị tạo điện áp một chiều", apply: "7.3 và 7.4", brand: "DTE", model: "DTE 70/50", price: "", supplier: "", note: ""},
+            {id: 24, stt: 1, process: "Cầu dao cách ly/ Disconnecting Switch", equipment: "Thiết bị đo điện trở cách điện/ Megohmmeter", apply: "7.2 (Đo điện trở cách điện) - 5kV", brand: "CA", model: "CA 6505", price: "", supplier: "", note: ""},
+            {id: 25, stt: 2, process: "Cầu dao cách ly/ Disconnecting Switch", equipment: "Thiết bị đo điện trở tiếp xúc", apply: "7.4", brand: "Scope", model: "CRM 100B+", price: "", supplier: "", note: ""},
+            {id: 26, stt: 2, process: "Cầu dao cách ly/ Disconnecting Switch", equipment: "Thiết bị đo điện trở tiếp xúc", apply: "7.4", brand: "Handy", model: "ZD2C", price: "", supplier: "", note: ""}
+        ];
+
+        let data = [];
+        let currentRole = 'view';
+        let editingId = null;
+
+        // Load data from localStorage or use initial data
+        function loadData() {
+            const saved = localStorage.getItem('patekEquipmentData');
+            data = saved ? JSON.parse(saved) : initialData;
+            return data;
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('patekEquipmentData', JSON.stringify(data));
+        }
+
+        // Get brand color class
+        function getBrandClass(brand) {
+            const map = {
+                'CA': 'brand-ca',
+                'KYORITSU': 'brand-kyoritsu',
+                'Baoding': 'brand-baoding',
+                'Xianheng': 'brand-xianheng',
+                'HV Hipot': 'brand-hvhipot',
+                'Wuhan UHV': 'brand-wuhan',
+                'Scope': 'brand-scope',
+                'Handy': 'brand-han
